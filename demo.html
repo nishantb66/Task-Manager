@@ -1,0 +1,113 @@
+<script>
+    // ─── your existing non-UI code ───────────────────────────────────────
+    const msgsEl = document.getElementById("messages");
+    const authForms = document.getElementById("auth-forms");
+    const welcomeEl = document.getElementById("welcome");
+    const userNameEl = document.getElementById("user-name");
+
+    const loginFormContainer = document.getElementById("login-form");
+    const signupFormContainer = document.getElementById("signup-form");
+    const showSignupLink = document.getElementById("show-signup");
+    const showLoginLink = document.getElementById("show-login");
+
+    function showMsg(text, cls = "error") {
+        msgsEl.innerHTML = `<li class="${cls}">${text}</li>`;
+    }
+    function clearMsgs() {
+        msgsEl.innerHTML = "";
+    }
+
+    function render() {
+        const token = localStorage.getItem("access");
+        if (!token) {
+            welcomeEl.classList.add("hidden");
+            authForms.classList.remove("hidden");
+            loginFormContainer.classList.remove("hidden");
+            signupFormContainer.classList.add("hidden");
+            clearMsgs();
+            return;
+        }
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        userNameEl.textContent = payload.username;
+        authForms.classList.add("hidden");
+        welcomeEl.classList.remove("hidden");
+    }
+
+    // ─── API calls ────────────────────────────────────────────────────────
+    document.getElementById("form-signup").onsubmit = async (e) => {
+        e.preventDefault();
+        clearMsgs();
+        const data = {
+            username: e.target.username.value,
+            password: e.target.password.value,
+        };
+        const res = await fetch("/api/register/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const body = await res.json();
+        if (res.ok) {
+            localStorage.setItem("access", body.access);
+            localStorage.setItem("refresh", body.refresh);
+            render();
+        } else {
+            showMsg(body.detail || JSON.stringify(body));
+        }
+    };
+
+    document.getElementById("form-login").onsubmit = async (e) => {
+        e.preventDefault();
+        clearMsgs();
+        const data = {
+            username: e.target.username.value,
+            password: e.target.password.value,
+        };
+        const res = await fetch("/api/token/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const body = await res.json();
+        if (res.ok) {
+            localStorage.setItem("access", body.access);
+            localStorage.setItem("refresh", body.refresh);
+            // tell Django to create a session cookie from our JWT
+            await fetch("/api/session_login/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ access: body.access }),
+                credentials: "same-origin", // important so the session cookie is sent back
+            });
+
+            render();
+        } else {
+            showMsg(body.detail || JSON.stringify(body));
+        }
+    };
+
+    document.getElementById("btn-logout").onclick = () => {
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        render();
+    };
+    // ──────────────────────────────────────────────────────────────────────
+
+    // ─── UI toggles for Login / Signup ──────────────────────────────────
+    showSignupLink.onclick = (e) => {
+        e.preventDefault();
+        loginFormContainer.classList.add("hidden");
+        signupFormContainer.classList.remove("hidden");
+        clearMsgs();
+    };
+    showLoginLink.onclick = (e) => {
+        e.preventDefault();
+        signupFormContainer.classList.add("hidden");
+        loginFormContainer.classList.remove("hidden");
+        clearMsgs();
+    };
+    // ──────────────────────────────────────────────────────────────────────
+
+    // initial display
+    render();
+</script>

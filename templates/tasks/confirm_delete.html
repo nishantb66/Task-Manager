@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+  <h2 class="text-xl font-bold text-red-500 mb-4">Delete Task</h2>
+  <p class="mb-4">
+    Are you sure you want to delete
+    “<strong>{{ task.title }}</strong>” on {{ task.date }}
+    at {{ task.approx_time }}?
+  </p>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <button type="submit"
+      class="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+      Yes, Delete
+    </button>
+  </form>
+{% endblock %}

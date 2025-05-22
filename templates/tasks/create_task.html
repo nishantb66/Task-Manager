@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Create Task{% endblock %}
+
+{% block content %}
+  <h2 class="text-xl font-bold mb-4">Create New Task</h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit"
+      class="w-full py-2 bg-white text-black rounded-lg hover:bg-white/80 transition">
+      Save Task
+    </button>
+  </form>
+{% endblock %}
