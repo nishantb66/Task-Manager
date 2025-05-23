@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Shared Tasks{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex justify-center items-start">
+  <div class="w-full max-w-2xl mx-auto backdrop-blur-md bg-white/80 border border-white/60 rounded-2xl shadow-glass p-5 md:p-10 space-y-10">
+
+    <!-- Header + Back Link -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-blue-700 drop-shadow">Shared Tasks</h2>
+      <a href="{% url 'dashboard' %}"
+         class="inline-flex items-center text-blue-600 hover:text-emerald-700 font-medium text-base px-2 py-1 rounded-lg bg-blue-50 hover:bg-emerald-50 transition focus:outline-none focus:ring-2 focus:ring-emerald-200">
+        &larr;<span class="ml-1">My Tasks</span>
+      </a>
+    </div>
+
+    {% if shared_list %}
+      <ul class="space-y-4">
+        {% for s in shared_list %}
+        <li class="bg-white/85 border border-white/40 rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-150 backdrop-blur-lg">
+          <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-1">
+            <h3 class="text-lg font-semibold text-slate-900 truncate">{{ s.task.title }}</h3>
+            <span class="text-xs font-mono text-slate-500">{{ s.shared_at|date:"M d, Y H:i" }}</span>
+          </div>
+          <div class="text-sm mb-1 text-slate-600">
+            <span class="font-semibold text-emerald-700">Shared by:</span>
+            <span class="font-medium text-blue-700">{{ s.sharer.username }}</span>
+          </div>
+          <div class="text-sm text-slate-700 mb-2">
+            {{ s.task.description|default:"(No description)"|linebreaksbr }}
+          </div>
+          <div class="text-xs text-slate-500 mt-2">
+            <span>Scheduled: <b>{{ s.task.date }}</b> at <b>{{ s.task.approx_time }}</b></span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="py-12 text-center text-slate-500 text-base">
+        No one has shared a task with you yet.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
