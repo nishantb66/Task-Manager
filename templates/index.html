@@ -4,10 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo Manager</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          },
           extend: {
             colors: {
               emerald: {
@@ -37,128 +44,348 @@
                 950: "#020617",
               },
             },
+            boxShadow: {
+              custom:
+                "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
+            },
           },
         },
       };
     </script>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+      }
+      .bg-gradient {
+        background-image: linear-gradient(135deg, #ecfdf5 0%, #f8fafc 100%);
+      }
+    </style>
   </head>
   <body
-    class="bg-slate-50 text-slate-700 min-h-screen flex items-center justify-center p-4 font-sans"
+    class="bg-gradient text-slate-700 min-h-screen flex items-center justify-center p-4 font-sans"
   >
     <div
-      class="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-8"
+      class="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-custom p-8 md:p-10 animate-fade-in"
     >
-      <div id="welcome" class="hidden flex flex-col items-center space-y-6">
-        <h1 class="text-3xl font-semibold text-slate-800">
-          Welcome, <span id="user-name" class="text-emerald-600"></span>!
+      <!-- Welcome Screen -->
+      <div id="welcome" class="hidden flex flex-col items-center space-y-7">
+        <div
+          class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 w-8 text-emerald-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <h1 class="text-3xl font-semibold text-slate-800 text-center">
+          Welcome,
+          <span id="user-name" class="text-emerald-600 font-bold"></span>!
         </h1>
         <p class="text-slate-600 text-center">
-          Manage your tasks efficiently and stay organized.
+          Manage your tasks efficiently and stay organized with our intuitive
+          task manager.
         </p>
-        <a
-          href="/tasks/"
-          class="w-full py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors duration-150 text-center"
-        >
-          View Dashboard
-        </a>
-        <button
-          id="btn-logout"
-          class="w-full py-3 border border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 transition-colors duration-150"
-        >
-          Log out
-        </button>
+        <div class="w-full space-y-4 pt-2">
+          <a
+            href="/tasks/"
+            class="w-full py-3.5 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 text-center flex items-center justify-center shadow-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            View Dashboard
+          </a>
+          <button
+            id="btn-logout"
+            class="w-full py-3.5 border border-slate-300 text-slate-700 rounded-xl font-semibold hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Log out
+          </button>
+        </div>
       </div>
 
+      <!-- Auth Forms -->
       <div id="auth-forms">
-        <h1 class="text-3xl font-bold text-center mb-8 text-emerald-700">
-          Todo Manager
+        <div class="flex justify-center mb-6">
+          <div
+            class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-emerald-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-center mb-8 text-slate-800">
+          <span class="text-emerald-600">Todo</span> Manager
         </h1>
         <ul
           id="messages"
-          class="mb-6 text-sm text-red-600 space-y-1 list-disc list-inside"
+          class="mb-6 text-sm text-red-600 space-y-1 list-disc list-inside bg-red-50 rounded-lg p-4 empty:hidden"
         ></ul>
 
+        <!-- Login Form -->
         <div id="login-form" class="space-y-6">
-          <form id="form-login" class="space-y-6">
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-600"
+          <form id="form-login" class="space-y-5">
+            <div class="space-y-1">
+              <label class="block text-sm font-medium text-slate-700"
                 >Username</label
               >
-              <input
-                name="username"
-                required
-                placeholder="Your username"
-                class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
-              />
+              <div class="relative">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  name="username"
+                  required
+                  placeholder="Your username"
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
+                />
+              </div>
             </div>
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-600"
+            <div class="space-y-1">
+              <label class="block text-sm font-medium text-slate-700"
                 >Password</label
               >
-              <input
-                name="password"
-                type="password"
-                required
-                placeholder="••••••••"
-                class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
-              />
+              <div class="relative">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
+                />
+              </div>
             </div>
             <button
               type="submit"
-              class="w-full py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors duration-150"
+              class="w-full py-3.5 mt-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 shadow-sm flex items-center justify-center"
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                />
+              </svg>
               Log In
             </button>
           </form>
+          <div class="relative py-3">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-slate-200"></div>
+            </div>
+            <div class="relative flex justify-center">
+              <span class="px-3 bg-white text-sm text-slate-500">or</span>
+            </div>
+          </div>
           <p class="text-center text-sm text-slate-600">
-            Don’t have an account?
+            Don't have an account?
             <a
               href="#"
               id="show-signup"
-              class="font-medium text-emerald-600 hover:text-emerald-500 underline"
-              >Sign Up</a
+              class="font-medium text-emerald-600 hover:text-emerald-500 transition-colors duration-150"
+              >Create an account</a
             >
           </p>
         </div>
 
+        <!-- Signup Form -->
         <div id="signup-form" class="hidden space-y-6">
-          <form id="form-signup" class="space-y-6">
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-600"
+          <form id="form-signup" class="space-y-5">
+            <div class="space-y-1">
+              <label class="block text-sm font-medium text-slate-700"
                 >Username</label
               >
-              <input
-                name="username"
-                required
-                placeholder="Choose a username"
-                class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
-              />
+              <div class="relative">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  name="username"
+                  required
+                  placeholder="Choose a username"
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
+                />
+              </div>
             </div>
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-600"
+            <div class="space-y-1">
+              <label class="block text-sm font-medium text-slate-700"
                 >Password</label
               >
-              <input
-                name="password"
-                type="password"
-                required
-                placeholder="••••••••"
-                class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
-              />
+              <div class="relative">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors duration-150 placeholder-slate-400 text-slate-700"
+                />
+              </div>
             </div>
             <button
               type="submit"
-              class="w-full py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors duration-150"
+              class="w-full py-3.5 mt-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 shadow-sm flex items-center justify-center"
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                />
+              </svg>
               Sign Up
             </button>
           </form>
+          <div class="relative py-3">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-slate-200"></div>
+            </div>
+            <div class="relative flex justify-center">
+              <span class="px-3 bg-white text-sm text-slate-500">or</span>
+            </div>
+          </div>
           <p class="text-center text-sm text-slate-600">
             Already have an account?
             <a
               href="#"
               id="show-login"
-              class="font-medium text-emerald-600 hover:text-emerald-500 underline"
+              class="font-medium text-emerald-600 hover:text-emerald-500 transition-colors duration-150"
               >Log In</a
             >
           </p>

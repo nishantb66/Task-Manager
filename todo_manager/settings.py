@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "accounts",
     "tasks",
     "rest_framework",
+    "widget_tweaks",
 ]
 
 MIDDLEWARE = [
